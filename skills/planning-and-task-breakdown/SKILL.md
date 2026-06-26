@@ -99,8 +99,8 @@ Each task follows this structure:
 - [ ] [Specific, testable condition]
 
 **Verification:**
-- [ ] Tests pass: `bun test -- --grep "feature-name"`
-- [ ] Build succeeds: `bun run build`
+- [ ] Tests pass: `<toolchain.test>`
+- [ ] Build succeeds: `<toolchain.build>`
 - [ ] Manual check: [description of what to verify]
 
 **Dependencies:** [Task numbers this depends on, or "None"]
@@ -204,14 +204,14 @@ When multiple agents or sessions are available:
 
 ## Hermes Integration
 
-With the [[factory-mode]] + [[eval-harness]] stack, verification is automatic after each task:
+With the [[factory-mode]] + [[eval-harness]] stack, verification is automatic after each task, using the **toolchain map**:
 
 ```bash
-bun run check    # typecheck + lint + test — fires per-action via eval-harness
-bun run build    # production build — gates every commit
+<toolchain.check>    # typecheck + lint + test — fires per-action via eval-harness
+<toolchain.build>    # production build — gates every commit
 ```
 
-For non-Bun projects, use the equivalent: `npm test`, `cargo test`, `go test`, `pytest`.
+For non-Bun projects, the toolchain map resolves the equivalents.
 
 ## Common Rationalizations
 

@@ -25,12 +25,12 @@ Sets up the full Factory Model harness for a TypeScript/Bun project: AGENTS.md, 
 - Existing project audit — user wants to know what harness components are missing
 - After major stack changes — re-audit and fill gaps
 
-**Skip for:** non-TS projects, projects with existing mature harness (all 5 components present and working).
+**Skip for:** projects with existing mature harness (all 5 components present and working).
 
 ## Prerequisites
 
-- Project has `package.json` with `bun` as package manager
-- TypeScript-based (`.ts`/`.tsx` files)
+- Project has a package manager config file (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`)
+- `toolchain-discovery` has been run to produce the command map
 - Git repository initialized
 
 ## Phase 1 — Audit

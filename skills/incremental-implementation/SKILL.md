@@ -193,11 +193,11 @@ Each increment should be independently revertable:
 
 ## Hermes Integration
 
-With the [[factory-mode]] + [[eval-harness]] stack, verification is automatic after each increment:
+With the [[factory-mode]] + [[eval-harness]] stack, verification is automatic after each increment. Use the **toolchain map** for commands (`<toolchain.check>`, `<toolchain.build>`, etc.):
 
 ```bash
-bun run check    # typecheck + lint + test — fires per-action via eval-harness
-bun run build    # production build
+<toolchain.check>    # typecheck + lint + test — fires per-action via eval-harness
+<toolchain.build>    # production build
 ```
 
 When directing an agent to implement incrementally:
@@ -208,7 +208,7 @@ When directing an agent to implement incrementally:
 Start with just the database schema change and the API endpoint.
 Don't touch the UI yet — we'll do that in the next increment.
 
-After implementing, run `bun test` and `bun run check` to verify
+After implementing, run <toolchain.test> and <toolchain.check> to verify
 nothing is broken."
 ```
 
@@ -219,10 +219,10 @@ Be explicit about what's in scope and what's NOT in scope for each increment.
 After each increment, verify:
 
 - [ ] The change does one thing and does it completely
-- [ ] All existing tests still pass (`bun test`)
-- [ ] The build succeeds (`bun run build`)
-- [ ] Type checking passes (`bun run typecheck`)
-- [ ] Linting passes (`bun run lint` or `biome check <sources>`)
+- [ ] All existing tests still pass (`<toolchain.test>`)
+- [ ] The build succeeds (`<toolchain.build>`)
+- [ ] Type checking passes (`<toolchain.typecheck>`)
+- [ ] Linting passes (`<toolchain.lint>`)
 - [ ] The new functionality works as expected
 - [ ] The change is committed with a descriptive message
 
