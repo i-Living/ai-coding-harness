@@ -1,4 +1,4 @@
-# AI Harness — Agent Instructions
+# AI Coding Harness — Agent Instructions
 
 Factory Model harness for AI-assisted development. Six skills that automate quality gates, project infrastructure, and the full spec→verify pipeline.
 
@@ -6,12 +6,15 @@ Factory Model harness for AI-assisted development. Six skills that automate qual
 
 ```bash
 # Clone into Hermes skills directory
-git clone https://github.com/i-Living/ai-harness.git ~/.hermes/skills/ai-harness
+git clone https://github.com/i-Living/ai-coding-harness.git ~/.hermes/skills/ai-coding-harness
 
 # Or install skill-by-skill via Hermes:
-hermes skills install https://raw.githubusercontent.com/i-Living/ai-harness/main/skills/eval-harness/SKILL.md
-hermes skills install https://raw.githubusercontent.com/i-Living/ai-harness/main/skills/factory-mode/SKILL.md
-# ... repeat for each skill
+hermes skills install https://raw.githubusercontent.com/i-Living/ai-coding-harness/main/skills/eval-harness/SKILL.md
+hermes skills install https://raw.githubusercontent.com/i-Living/ai-coding-harness/main/skills/factory-mode/SKILL.md
+hermes skills install https://raw.githubusercontent.com/i-Living/ai-coding-harness/main/skills/spec-driven-development/SKILL.md
+hermes skills install https://raw.githubusercontent.com/i-Living/ai-coding-harness/main/skills/test-driven-development/SKILL.md
+hermes skills install https://raw.githubusercontent.com/i-Living/ai-coding-harness/main/skills/code-review-and-quality/SKILL.md
+hermes skills install https://raw.githubusercontent.com/i-Living/ai-coding-harness/main/skills/requesting-code-review/SKILL.md
 ```
 
 After install: `/reload-skills` or restart session.

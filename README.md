@@ -1,4 +1,4 @@
-# AI Harness
+# AI Coding Harness
 
 Factory Model harness for AI-assisted development — Hermes Agent skills that automate quality gates, project infrastructure, and the full spec→verify pipeline.
 
@@ -60,7 +60,7 @@ skill_view(name='requesting-code-review')
 ## Structure
 
 ```
-ai-harness/
+ai-coding-harness/
 ├── skills/
 │   ├── eval-harness/SKILL.md              # Verification gates
 │   ├── factory-mode/SKILL.md              # Harness setup
