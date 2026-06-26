@@ -72,16 +72,22 @@ git diff --cached | grep "^+" | grep -E "execute\(f\"|\.format\(.*SELECT|\.forma
 
 ## Step 3 — Baseline tests and linting
 
-Detect the project language and run the appropriate tools. Capture the failure
-count BEFORE your changes as **baseline_failures** (stash changes, run, pop).
-Only NEW failures introduced by your changes block the commit.
+Use the **toolchain map** from `toolchain-discovery` to run the project's test, lint, and typecheck commands. Capture the failure count BEFORE your changes as **baseline_failures** (stash changes, run, pop). Only NEW failures introduced by your changes block the commit.
 
-**Test frameworks** (auto-detect by project files):
+```bash
+# Run the project's commands from the toolchain map
+<toolchain.test>  2>&1 | tail -5
+<toolchain.lint>  2>&1 | tail -10
+<toolchain.typecheck> 2>&1 | tail -10
+```
+
+If the toolchain map isn't available, detect by project files:
+
 ```bash
 # Python (pytest)
 python -m pytest --tb=no -q 2>&1 | tail -5
 
-# Node (npm test)
+# Node
 npm test -- --passWithNoTests 2>&1 | tail -5
 
 # Rust
@@ -89,23 +95,6 @@ cargo test 2>&1 | tail -5
 
 # Go
 go test ./... 2>&1 | tail -5
-```
-
-**Linting and type checking** (run only if installed):
-```bash
-# Python
-which ruff && ruff check . 2>&1 | tail -10
-which mypy && mypy . --ignore-missing-imports 2>&1 | tail -10
-
-# Node
-which npx && npx eslint . 2>&1 | tail -10
-which npx && npx tsc --noEmit 2>&1 | tail -10
-
-# Rust
-cargo clippy -- -D warnings 2>&1 | tail -10
-
-# Go
-which go && go vet ./... 2>&1 | tail -10
 ```
 
 **Baseline comparison:** If baseline was clean and your changes introduce failures,

@@ -185,10 +185,9 @@ Execute tasks one at a time following `incremental-implementation` and `test-dri
 
 After each implementation task, run verification through the project's harness:
 ```bash
-bun run check     # typecheck + lint + test (eval-harness + factory-mode stack)
+<toolchain.check>     # typecheck + lint + test (eval-harness + factory-mode stack)
 ```
-
-If the project uses the [[eval-harness]] + [[factory-mode]] stack, this runs automatically after every code change. For non-Bun projects, run the equivalent: `npm test && npm run lint`.
+If the project uses the [[eval-harness]] + [[factory-mode]] stack, this runs automatically after every code change using the toolchain map.
 
 ## Keeping the Spec Alive
 

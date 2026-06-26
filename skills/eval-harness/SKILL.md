@@ -118,19 +118,17 @@ For tasks where you can't write a deterministic test (summaries, translations, a
 
 - **Don't run ③ (build) and ④ (tests) if project isn't configured** — skip, not an error
 - **Don't auto-fix failing tests without explicit permission** — first explain what failed
-- **Biome format ≠ Biome check** — format auto-fixes, check only verifies. Use format for fixing, check for verification.
-- **Biome 2.x config schema changed:** `files.ignore` and `linter.rules` — unknown keys in 2.5+. Use `vcs.useIgnoreFile: true` for ignore, `"linter": {"enabled": true}` for default recommended rules. Check current $schema URL.
+- **Format ≠ Check** — format auto-fixes, check only verifies. Use format for fixing, check for verification. This applies to all formatters (biome, prettier, ruff).
+- **Don't run formatter on others'/unchanged files** — only on files you touched
+- **`<toolchain.check>` may not be a single script** — package.json may have `lint`, `typecheck` instead of a combined `check`. Verify the project's scripts before running.
 - **Wiki checks are non-blocking** — if index/log wasn't updated, just update them, don't stop everything. Missing wikilinks → flag but don't block.
-- **Don't run biome format on others'/unchanged files** — only on files you touched
-- **On Windows: `npx @biomejs/biome format --write .`** (full package name) — if biome not installed globally
-- **`bun run check` is a non-standard script** — package.json may have `lint`, `typecheck` instead. Check scripts before running.
 
 ## Verification
 
 After applying eval-harness to a task:
 
 - [ ] Format gate ran on changed files and passed (or issues were auto-fixed)
-- [ ] Code gate (`bun run check` or equivalent) passed — typecheck + lint + test
+- [ ] Code gate (`<toolchain.check>` or equivalent) passed — typecheck + lint + test
 - [ ] File gate: all written files exist, are non-empty, and have valid format
 - [ ] Git gate: branch is as expected, no unintended pending changes
 - [ ] For non-deterministic tasks: LM-as-a-Judge self-review completed (3 questions)

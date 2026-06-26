@@ -1,17 +1,17 @@
 ---
 name: test-driven-development
-description: "TDD: enforce RED-GREEN-REFACTOR with bun test. Tests before code."
-version: 2.0.0
+description: "TDD: enforce RED-GREEN-REFACTOR. Tests before code. Stack-agnostic — uses the toolchain map for test commands."
+version: 2.1.0
 author: Hermes Agent (adapted from obra/superpowers)
 license: MIT
 platforms: [linux, macos, windows]
 metadata:
   hermes:
-    tags: [testing, tdd, development, quality, red-green-refactor, bun]
-    related_skills: [eval-harness, factory-mode, systematic-debugging, subagent-driven-development]
+    tags: [testing, tdd, development, quality, red-green-refactor]
+    related_skills: [eval-harness, factory-mode, toolchain-discovery, systematic-debugging, subagent-driven-development]
 ---
 
-# Test-Driven Development (TDD) — Bun / TypeScript
+# Test-Driven Development (TDD)
 
 ## Overview
 
@@ -21,7 +21,7 @@ Write the test first. Watch it fail. Write minimal code to pass.
 
 **Violating the letter of the rules is violating the spirit of the rules.**
 
-> **Test runner:** Use the project's test command from the toolchain map (`bun test`, `npm test`, `pytest`, `cargo test`, `go test` — whatever `toolchain-discovery` resolved). The RED-GREEN-REFACTOR discipline is stack-agnostic.
+> **Stack note:** Code examples use TypeScript for readability. Apply the same patterns in your language. Run commands via the **toolchain map** (`<toolchain.test>`, `<toolchain.check>`, etc.) — resolved by `toolchain-discovery`. The RED-GREEN-REFACTOR discipline is stack-agnostic.
 
 ## When to Use
 
@@ -51,7 +51,7 @@ Write code before the test? Delete it. Start over.
 ### RED — Write Failing Test
 
 ```typescript
-// bun test auto-discovers *.test.ts files
+// Example in TypeScript (bun:test). Pattern works identically in jest, vitest, pytest, etc.
 import { describe, expect, test } from 'bun:test'
 import { retryOperation } from '../src/retry'
 
@@ -83,7 +83,7 @@ describe('retryOperation', () => {
 **MANDATORY. Never skip.**
 
 ```bash
-bun test __tests__/retry.test.ts
+<toolchain.test> path/to/test
 ```
 
 Confirm: test fails (not errors), failure is expected, fails because feature is missing.
@@ -114,10 +114,10 @@ Don't add features, refactor other code, or "improve" beyond the test. Cheating 
 
 ```bash
 # Specific test
-bun test __tests__/retry.test.ts
+<toolchain.test> path/to/test
 
 # Full suite
-bun test
+<toolchain.test>
 ```
 
 ### REFACTOR — Clean Up
@@ -127,7 +127,7 @@ After green only: remove duplication, improve names, extract helpers. Keep tests
 ### Full verification
 
 ```bash
-bun run check     # typecheck + lint + test (if eval-harness is active)
+<toolchain.check>     # typecheck + lint + test (if eval-harness is active)
 ```
 
 ## The Prove-It Pattern (Bug Fixes)
@@ -191,20 +191,20 @@ export async function completeTask(id: string): Promise<Task> {
 
 ```bash
 # RED — verify failure
-bun test __tests__/feature.test.ts
+<toolchain.test> path/to/test
 
 # GREEN — verify pass
-bun test __tests__/feature.test.ts
+<toolchain.test> path/to/test
 
 # Full suite
-bun test
+<toolchain.test>
 ```
 
 ### With eval-harness
 
-After TDD cycle completes, eval-harness fires per-action gates:
-- `bun run format` — Biome auto-format changed files
-- `bun run check` — typecheck + lint + test (full verification)
+After TDD cycle completes, eval-harness fires per-action gates using the toolchain map:
+- `<toolchain.format>` — auto-format changed files
+- `<toolchain.check>` — typecheck + lint + test (full verification)
 
 TDD + eval-harness = RED → GREEN → REFACTOR → format → check → commit.
 
@@ -215,14 +215,14 @@ delegate_task(
     goal="Implement [feature] using strict TDD",
     context="""
     Follow test-driven-development skill:
-    1. Write failing test FIRST (bun test)
+    1. Write failing test FIRST (<toolchain.test>)
     2. Run to verify failure
     3. Write minimal code to pass
     4. Run to verify pass
     5. Refactor if needed
-    6. bun run check before done
+    6. <toolchain.check> before done
 
-    Project: bun test runner, Biome format, bun run check = typecheck + lint + test
+    Project: uses the toolchain map for all commands.
     """,
     toolsets=['terminal', 'file']
 )
@@ -264,6 +264,6 @@ After completing a TDD cycle:
 - [ ] RED: test was written first and was observed to fail
 - [ ] GREEN: minimal code was written to pass the test (no extra features)
 - [ ] REFACTOR: code was cleaned up while keeping tests green
-- [ ] `bun test` passes (full suite)
-- [ ] `bun run check` passes (typecheck + lint + test)
+- [ ] `<toolchain.test>` passes (full suite)
+- [ ] `<toolchain.check>` passes (typecheck + lint + test)
 - [ ] If bug fix: the test reproduces the bug AND prevents regression
