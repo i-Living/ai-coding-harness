@@ -1,60 +1,60 @@
 # AI Harness
 
-Factory Model harness for AI-assisted development — Hermes Agent skills that automate quality gates and project infrastructure.
-
-## What is this?
-
-Two skills that form the backbone of disciplined AI-assisted development, following the [Factory Model](https://addyosmani.com/blog/factory-model/) paradigm:
+Factory Model harness for AI-assisted development — Hermes Agent skills that automate quality gates, project infrastructure, and the full spec→verify pipeline.
 
 > Build the system that builds software. The agent generates code; the harness verifies it.
 
-## Skills
+## Harness Skills (6)
 
-### 1. eval-harness
+### Infrastructure
 
-**Automatic verification gates** — fires after every code change:
+| Skill | Role |
+|-------|------|
+| **factory-mode** | One-command harness setup: audit → configure → verify |
+| **eval-harness** | Per-action verification gates after every code change |
 
-- **Code gates** — `npx biome format` + `bun run check` after any file change
-- **File gates** — verify file exists, non-empty, valid format after write
-- **Git gates** — verify branch state, no pending changes
-- **Wiki gates** — index.md, log.md, frontmatter integrity
-- **Commit gates** — full lint + build + test before commit
+### Workflow
 
-### 2. factory-mode
+| Skill | Role |
+|-------|------|
+| **spec-driven-development** | SPECIFY → PLAN → TASKS → IMPLEMENT with spec as source of truth |
+| **test-driven-development** | RED-GREEN-REFACTOR with `bun test` — no code without failing test |
+| **code-review-and-quality** | 5-axis review before merge — correctness, readability, architecture, security, performance |
+| **requesting-code-review** | Pre-commit pipeline: security scan → independent reviewer → auto-fix |
 
-**One-command harness setup** — audits a project and configures the full pipeline:
-
-| Phase | What it does |
-|-------|-------------|
-| Audit | Check AGENTS.md, Biome, tests, pre-commit, CI, check script |
-| Configure | Install and set up missing components |
-| Verify | Run `check` + `build` to confirm pipeline works |
-| Document | Update AGENTS.md with conventions, pitfalls, verification steps |
-
-### What gets set up
+### How They Work Together
 
 ```
-spec → AI generates → bun run check (typecheck + lint + test) → pre-commit hook → push → CI gate → merge
+spec-driven-dev → TDD → code-review → requesting-code-review → commit
+      │              │         │               │
+      └──────────────┴─────────┴───────────────┘
+                        │
+                   eval-harness
+                 (fires after every action)
+                        │
+                   factory-mode
+                (sets up the whole thing)
 ```
-
-Components:
-- **AGENTS.md** — project conventions for AI agents
-- **Biome** — formatter + linter
-- **bun:test** — test runner with smoke test
-- **Husky + lint-staged** — pre-commit formatting
-- **GitHub Actions** — CI pipeline on push/PR
-- **`bun run check`** — unified verification command
 
 ## Quick Start
 
 ```bash
 # In your Hermes session:
-skill_view(name='factory-mode')
-# → audits the current project, asks what to set up, configures everything
 
-# Or load eval-harness for per-action verification:
-skill_view(name='eval-harness')
-# → after every code change, auto-runs format + check
+# Set up a project from scratch:
+skill_view(name='factory-mode')
+
+# Write a spec before coding:
+skill_view(name='spec-driven-development')
+
+# Enforce TDD discipline:
+skill_view(name='test-driven-development')
+
+# Review before merge:
+skill_view(name='code-review-and-quality')
+
+# Full pre-commit pipeline:
+skill_view(name='requesting-code-review')
 ```
 
 ## Structure
@@ -62,12 +62,28 @@ skill_view(name='eval-harness')
 ```
 ai-harness/
 ├── skills/
-│   ├── eval-harness/
-│   │   └── SKILL.md          # Verification gates skill
-│   └── factory-mode/
-│       └── SKILL.md          # Harness setup skill
-└── README.md                  # This file
+│   ├── eval-harness/SKILL.md              # Verification gates
+│   ├── factory-mode/SKILL.md              # Harness setup
+│   ├── spec-driven-development/SKILL.md   # Spec-first workflow
+│   ├── test-driven-development/SKILL.md   # TDD with bun test
+│   ├── code-review-and-quality/SKILL.md   # 5-axis review
+│   └── requesting-code-review/SKILL.md    # Pre-commit pipeline
+└── README.md
 ```
+
+## The Pipeline
+
+```
+spec → AI generates → bun run check (typecheck + lint + test) → pre-commit hook → push → CI gate → merge
+```
+
+Components set up by **factory-mode**:
+- **AGENTS.md** — project conventions for AI agents
+- **Biome** — formatter + linter  
+- **bun:test** — test runner with smoke test
+- **Husky + lint-staged** — pre-commit formatting
+- **GitHub Actions** — CI pipeline on push/PR
+- **`bun run check`** — unified verification command
 
 ## Principles
 
