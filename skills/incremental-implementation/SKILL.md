@@ -18,7 +18,7 @@ metadata:
 
 Build in thin vertical slices — implement one piece, test it, verify it, then expand. Avoid implementing an entire feature in one pass. Each increment should leave the system in a working, testable state. This is the execution discipline that makes large features manageable.
 
-> **Stack note:** Verification commands use `bun test`/`bun run check`. For non-Bun projects, substitute: `npm test && npm run build`, `pytest`, `cargo test && cargo build`, `go test ./...`. The increment discipline is stack-agnostic.
+> **Verification commands:** Use the project's toolchain map (`bun test`/`pytest`/`cargo test`/`go test` — whatever `toolchain-discovery` resolved). The increment discipline is stack-agnostic.
 
 ## When to Use
 

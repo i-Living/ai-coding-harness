@@ -21,7 +21,7 @@ Write the test first. Watch it fail. Write minimal code to pass.
 
 **Violating the letter of the rules is violating the spirit of the rules.**
 
-> **Stack note:** This skill uses `bun test` in all examples. For non-Bun projects, substitute your test runner: `pytest`/`jest`/`cargo test`/`go test`. The RED-GREEN-REFACTOR discipline is stack-agnostic.
+> **Test runner:** Use the project's test command from the toolchain map (`bun test`, `npm test`, `pytest`, `cargo test`, `go test` — whatever `toolchain-discovery` resolved). The RED-GREEN-REFACTOR discipline is stack-agnostic.
 
 ## When to Use
 

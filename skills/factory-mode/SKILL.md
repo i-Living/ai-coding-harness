@@ -35,7 +35,9 @@ Sets up the full Factory Model harness for a TypeScript/Bun project: AGENTS.md, 
 
 ## Phase 1 — Audit
 
-Read the existing project state. Never assume — always check.
+**First, run `toolchain-discovery`** to detect the project stack. This produces a canonical command map (`test`, `lint`, `format`, `typecheck`, `build`) that all subsequent phases use. Never assume `bun` or `biome` — detect.
+
+Then read the existing project state:
 
 ```bash
 # What exists?
@@ -76,9 +78,9 @@ Write AGENTS.md following user conventions:
 - Sections: Stack, Project structure, Conventions (scripts table), Key architecture decisions (if applicable), Pitfalls, Verification
 - Add eval-harness reference: mention `bun run check` = typecheck + lint + test
 
-### Biome
+### Biome / ESLint / Prettier / Ruff
 
-> **If the project already uses ESLint + Prettier (or `ruff` for Python), skip Biome.** Only install Biome for greenfield TS/Bun projects. For existing projects, adapt the `check`/`format`/`lint` scripts to the project's existing toolchain.
+Use the toolchain map from Phase 1 to select the right formatter+linter. **Do not force Biome** — use whatever the toolchain map says.
 
 ```bash
 # Install (TS/Bun projects only)
@@ -95,7 +97,7 @@ Write `biome.json`:
 
 ### Scripts (package.json)
 
-Add if missing:
+Add if missing, using the **toolchain map** from Phase 1. Example for a Bun+Biome project:
 ```json
 {
   "check": "bun run typecheck && biome check <sources> && bun run test",

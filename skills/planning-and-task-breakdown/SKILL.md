@@ -9,7 +9,7 @@ metadata:
   hermes:
     tags: [planning, task-breakdown, vertical-slicing, workflow, factory-model]
     category: plan
-    related_skills: [spec-driven-development, incremental-implementation, test-driven-development, eval-harness]
+    related_skills: [spec-driven-development, incremental-implementation, test-driven-development, eval-harness, toolchain-discovery]
 ---
 
 # Planning and Task Breakdown

@@ -4,7 +4,7 @@ Factory Model harness for AI-assisted development — Hermes Agent skills that a
 
 > Build the system that builds software. The agent generates code; the harness verifies, compacts, observes, and improves.
 
-## Harness Skills (12)
+## Harness Skills (13)
 
 ### Define (pre-code)
 
@@ -17,6 +17,7 @@ Factory Model harness for AI-assisted development — Hermes Agent skills that a
 
 | Skill | Role |
 |-------|------|
+| **toolchain-discovery** | Detects project stack → produces canonical command map (test, lint, format, build). Makes all other skills stack-agnostic. |
 | **factory-mode** | One-command harness setup: audit → configure → verify |
 | **eval-harness** | Per-action verification gates after every code change |
 
@@ -41,6 +42,9 @@ Factory Model harness for AI-assisted development — Hermes Agent skills that a
 ### How They Work Together
 
 ```
+toolchain-discovery (detect stack → command map)
+      │
+      ▼
 interview-me (intent)
       │
       ▼
@@ -94,6 +98,7 @@ ai-coding-harness/
 │   ├── performance-checklist.md
 │   └── definition-of-done.md
 └── skills/
+    ├── toolchain-discovery/SKILL.md              # Stack detection + command map
     ├── interview-me/SKILL.md                    # Pre-spec intent extraction
     ├── spec-driven-development/SKILL.md         # Spec-first workflow
     ├── planning-and-task-breakdown/SKILL.md     # Task decomposition
@@ -111,14 +116,14 @@ ai-coding-harness/
 ## The Pipeline
 
 ```
-interview → spec → plan → implement → TDD → review → verify → commit
-                │                                    │
-        context-compaction                   eval-harness
-        (token savings +                    (per-action gates)
-         context quality)
-                │                                    │
-        agent-observability ────────────→ RHO ──→ improve
-        (logs everything)              (analyzes)
+toolchain-discovery → interview → spec → plan → implement → TDD → review → verify → commit
+         │                                                         │
+   (command map                                             eval-harness
+    consumed by                                             (per-action gates
+    all skills)                                              using toolchain map)
+         │                                                         │
+   context-compaction ←─────────────────────────────→ RHO ──→ improve
+   agent-observability
 ```
 
 ## Principles
