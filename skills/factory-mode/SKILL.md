@@ -102,7 +102,7 @@ Add if missing:
 }
 ```
 
-> ⚠️ User preference: НЕ изменять .env, biome.json, tsconfig.json, package.json scripts без разрешения. ASK before modifying configs.
+> ⚠️ User preference: DO NOT modify .env, biome.json, tsconfig.json, package.json scripts without permission. ASK before modifying configs.
 
 ### Tests
 
@@ -218,3 +218,5 @@ After setup, verify AGENTS.md reflects the current state. Add if missing:
 - **Monorepo awareness** — if `web/` subdirectory has its own package.json, configs go there, not root.
 - **Test location** — Bun discovers `*.test.ts` anywhere. `__tests__/` is conventional but not required.
 - **CI bun version** — detect from `package.json` `packageManager` field or `bun.lock`.
+- **GitHub repo creation** — the user's `gh_token` is a fine-grained PAT that blocks `.github/workflows/` writes and may lack `createRepository`. If `gh repo create` fails with `Resource not accessible by personal access token`, tell the user to create the repo manually on GitHub, provide the remote URL, and wait for confirmation before pushing. Don't loop-retry `gh repo create`.
+- **Don't rename busy directory** — if `mv` fails with "Device or resource busy", the shell has cwd inside the target. Try `cd .. && mv` or tell the user to do it after the session ends.

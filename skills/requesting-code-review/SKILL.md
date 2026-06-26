@@ -25,7 +25,7 @@ quality gates, an independent reviewer subagent, and an auto-fix loop.
 - After completing a task with 2+ file edits in a git repo
 - After each task in subagent-driven-development (the two-stage review)
 
-**Companion skill:** [[eval-harness]] — автоматические гейты после КАЖДОГО изменения кода (формат, линт, файл-валидация). `eval-harness` работает как рефлекс, `requesting-code-review` — полный pre-commit цикл с security scan и независимым reviewer-сабагентом.
+**Companion skill:** [[eval-harness]] — automatic gates after EVERY code change (format, lint, file validation). `eval-harness` fires as a reflex, `requesting-code-review` is the full pre-commit cycle with security scan and independent reviewer subagent.
 
 **Skip for:** documentation-only changes, pure config tweaks, or when user says "skip verification".
 

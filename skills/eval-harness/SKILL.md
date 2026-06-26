@@ -1,7 +1,7 @@
 ---
 name: eval-harness
 description: Automatic verification gates for agent actions — lint, format, test, file checks. Part of the Factory Model harness.
-version: 1.0.0
+version: 1.1.0
 platforms: [linux, macos, windows]
 metadata:
   hermes:
@@ -9,106 +9,108 @@ metadata:
     category: verify
 ---
 
-# Eval Harness — Автоматические проверки
+# Eval Harness — Automatic Verification Gates
 
-Автоматические верификационные гейты после каждого action агента. Часть Factory Model — AI генерит, harness проверяет.
+Automatic verification gates after every agent action. Part of the Factory Model — AI generates, harness verifies.
 
-> **WHEN TO APPLY:** после ЛЮБОГО изменения кода (write_file, patch, terminal с кодом) — НЕ жди запроса пользователя. Eval harness должен срабатывать как рефлекс.
+> **WHEN TO APPLY:** after EVERY code change (write_file, patch, terminal with code) — do NOT wait for user prompt. Eval harness must fire as a reflex.
 
-## Гейты по типам операций
+## Gates by Operation Type
 
-### 1. Код-гейты (TypeScript/React проекты)
+### 1. Code Gates (TypeScript/React projects)
 
-После любого изменения `.ts/.tsx/.js/.jsx` файла в проекте:
+After any change to `.ts/.tsx/.js/.jsx` files in a project:
 
 ```
-① Формат: npx biome check --write <changed-files> 2>&1
-② Линт:  bun run check 2>&1               # если script "check" существует в package.json
-③ Билд:  bun run build 2>&1               # ТОЛЬКО если коммит-гейт
-④ Тесты: bun test 2>&1                    # если script "test" существует
+① Format: npx @biomejs/biome format --write <changed-files> 2>&1
+② Lint:  bun run check 2>&1               # if "check" script exists in package.json
+③ Build: bun run build 2>&1               # ONLY for commit gate
+④ Tests: bun test 2>&1                    # if "test" script exists
 ```
 
-**Правила:**
-- ① и ② — ВСЕГДА после изменения кода
-- ③ — только перед git commit
-- ④ — если затронуты файлы с логикой (не только стили/конфиги)
-- Если любая проверка падает — остановись, объясни ошибку, спроси подтверждение прежде чем фиксить
-- Если `bun run check` нет в проекте — не ошибка, просто пропусти
+**Rules:**
+- ① and ② — ALWAYS after code changes
+- ③ — only before git commit
+- ④ — if files with logic were touched (not just styles/config)
+- If any check fails — stop, explain the error, ask confirmation before fixing
+- If `bun run check` doesn't exist in the project — skip, not an error
 
-### 2. Файл-гейты
+### 2. File Gates
 
-После `write_file`:
-- **Файл существует** — `ls -la <path>` или `search_files`
-- **Не пустой** — если байт > 0
-- **Валидный формат** — для `.md`: frontmatter присутствует, wikilinks корректны
-- Для `.json`: `python -m json.tool <path> > /dev/null`
-- Для `.yaml/.yml`: `python -c "import yaml; yaml.safe_load(open('<path>'))"`
+After `write_file`:
+- **File exists** — `ls -la <path>` or `search_files`
+- **Non-empty** — size > 0 bytes
+- **Valid format** — for `.md`: frontmatter present, wikilinks correct
+- For `.json`: `python -m json.tool <path> > /dev/null`
+- For `.yaml/.yml`: `python -c "import yaml; yaml.safe_load(open('<path>'))"`
 
-### 3. Git-гейты
+### 3. Git Gates
 
-После любого git action:
-- **Ветка не переключилась неожиданно:** `git branch --show-current` — сверь с ожидаемой
-- **Нет pending изменений** (если не планировался коммит): `git diff --stat`
-- **Если нужен коммит** — после коммита: `git log -1 --oneline` — убедись что коммит прошёл
+After any git action:
+- **Branch didn't switch unexpectedly:** `git branch --show-current` — verify against expected
+- **No pending changes** (if commit not planned): `git diff --stat`
+- **If commit needed** — after commit: `git log -1 --oneline` — verify commit landed
 
-### 4. Wiki-гейты
+### 4. Wiki Gates
 
-После записи в Wiki (`C:/MediaServer/Wiki/wiki/`):
-- **Файл создан/обновлён:** проверь через `search_files`
-- **index.md обновлён:** grep для имени новой страницы в index.md
-- **log.md обновлён:** grep для даты/названия в log.md
-- **Wikilinks валидны:** все `[[...]]` ссылки в новой странице указывают на существующие страницы (по возможности)
-- **Фронтматтер:** title, created, updated, type, tags, sources — все поля присутствуют
+After writing to Wiki (`$WIKI_PATH/wiki/`):
+- **File created/updated:** verify via `search_files`
+- **index.md updated:** grep for new page name in index.md
+- **log.md updated:** grep for date/name in log.md
+- **Wikilinks valid:** all `[[...]]` links in new page point to existing pages (where possible)
+- **Frontmatter:** title, created, updated, type, tags, sources — all fields present
 
-### 5. Коммит-гейты (перед `git commit` / открытием PR)
+### 5. Commit Gates (before `git commit` / opening PR)
 
-В дополнение к код-гейтам:
+In addition to code gates:
 ```
-① Полный формат: npx biome check --write . 2>&1 || npx biome format --write .
-② Полный линт:  bun run check 2>&1
-③ Билд:         bun run build 2>&1       # если есть
-④ Тесты:        bun test 2>&1             # если есть
-⑤ Сводка:       git diff --stat
+① Full format: npx @biomejs/biome format --write . 2>&1
+② Full lint:   bun run check 2>&1
+③ Build:       bun run build 2>&1       # if present
+④ Tests:       bun test 2>&1            # if present
+⑤ Summary:     git diff --stat
 ```
 
-## Приоритеты проверок
+## Severity Levels
 
-**КРИТИЧЕСКИЕ (остановись немедленно):**
-- Код не компилируется/не запускается
-- Тесты падают
-- Git в неожиданном состоянии (wrong branch, detached HEAD)
+**CRITICAL (stop immediately):**
+- Code doesn't compile/run
+- Tests fail
+- Git in unexpected state (wrong branch, detached HEAD)
 
-**ВАЖНЫЕ (остановись, сообщи, жди решения):**
-- Линтер находит ошибки (не warnings)
-- Форматтер сообщает о неотформатированных файлах
-- Файл не создался / пустой после write
+**IMPORTANT (stop, report, wait for decision):**
+- Linter finds errors (not warnings)
+- Formatter reports unformatted files
+- File not created / empty after write
 
-**INFO (сообщи, не останавливай):**
-- Линтер warnings
-- Файл больше 200 строк (кандидат на split)
-- Нет AGENTS.md в проекте
+**INFO (report, don't stop):**
+- Linter warnings
+- File over 200 lines (candidate for split)
+- No AGENTS.md in project
 
-## LM-as-a-Judge (для недетерминированных задач)
+## LM-as-a-Judge (for non-deterministic tasks)
 
-Для задач где нельзя написать детерминированный тест (summary, переводы, анализ):
-- **Self-review:** после генерации summary/анализа — перечитай и задай 3 вопроса:
-  1. Все ли ключевые пункты покрыты?
-  2. Есть ли фактические ошибки?
-  3. Адекватен ли тон/стиль?
-- **Если ответ > 500 слов** — предложи TL;DR в начале
+For tasks where you can't write a deterministic test (summaries, translations, analysis):
+- **Self-review:** after generating summary/analysis — re-read and ask 3 questions:
+  1. Are all key points covered?
+  2. Are there any factual errors?
+  3. Is the tone/style appropriate?
+- **If response > 500 words** — offer TL;DR at the top
 
 ## Related Skills
 
-- [[harness-engineering]] — umbrella skill: full Factory Model setup (AGENTS.md, CI, pre-commit)
+- [[factory-mode]] — full harness setup (AGENTS.md, Biome, tests, CI, pre-commit)
 - [[requesting-code-review]] — pre-commit security review pipeline
+- [[context-compaction]] — token economics for large payloads
+- [[agent-observability]] — traces and metrics
 
-## Питфоллы
+## Pitfalls
 
-- **Не делай ③ (build) и ④ (tests) если проект не настроен** — пропусти, это не ошибка
-- **Не исправляй падающие тесты автоматически без явного разрешения** — сначала объясни что упало
-- **Biome format ≠ Biome check** — format авто-фиксит, check только проверяет. Используй format для фикса, check для верификации
-- **Biome 2.x config schema изменилась:** `files.ignore` и `linter.rules` — неизвестные ключи в 2.5+. Для игнора используй `vcs.useIgnoreFile: true`, для линтера достаточно `"linter": {"enabled": true}` с дефолтными recommended правилами. Проверяй актуальный $schema URL.
-- **Wiki-проверки не блокирующие** — если index.md забыл обновить, просто обнови, не останавливай всё
-- **Не запускай biome format на чужих/неизменённых файлах** — только на тех что затронул
-- **На Windows: `npx @biomejs/biome format --write .`** (полное имя пакета) — если biome не установлен глобально
-- **`bun run check` нестандартный script** — в package.json может называться `lint`, `typecheck` или отсутствовать. Проверь scripts перед запуском.
+- **Don't run ③ (build) and ④ (tests) if project isn't configured** — skip, not an error
+- **Don't auto-fix failing tests without explicit permission** — first explain what failed
+- **Biome format ≠ Biome check** — format auto-fixes, check only verifies. Use format for fixing, check for verification.
+- **Biome 2.x config schema changed:** `files.ignore` and `linter.rules` — unknown keys in 2.5+. Use `vcs.useIgnoreFile: true` for ignore, `"linter": {"enabled": true}` for default recommended rules. Check current $schema URL.
+- **Wiki checks are non-blocking** — if index.md wasn't updated, just update it, don't stop everything
+- **Don't run biome format on others'/unchanged files** — only on files you touched
+- **On Windows: `npx @biomejs/biome format --write .`** (full package name) — if biome not installed globally
+- **`bun run check` is a non-standard script** — package.json may have `lint`, `typecheck` instead. Check scripts before running.
