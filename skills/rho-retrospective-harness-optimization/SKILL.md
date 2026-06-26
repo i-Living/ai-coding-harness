@@ -1,13 +1,15 @@
 ---
 name: rho-retrospective-harness-optimization
 description: "Self-improving harness: analyze past failures, detect patterns, auto-patch skills and AGENTS.md to prevent recurrence."
-version: 1.0.0
+version: 1.0.1
+author: Hermes Agent
+license: MIT
 platforms: [linux, macos, windows]
 metadata:
   hermes:
     tags: [harness, optimization, self-improvement, evals, feedback-loop]
     category: verify
-    related_skills: [eval-harness, factory-mode, session_search]
+    related_skills: [eval-harness, factory-mode, agent-observability]
 ---
 
 # RHO — Retrospective Harness Optimization
@@ -133,3 +135,14 @@ If efficacy < 50%, RHO is over-patching — increase threshold for proposing cha
 - **Context window decay** — old sessions may not reflect current harness state
 - **False positives** — user saying "no" might be a preference, not a failure
 - **Skill bloat** — don't create a new skill for every minor fix; patch existing ones
+
+## Verification
+
+After running an RHO cycle:
+
+- [ ] Failure signals were detected via `session_search` (user corrections, test failures, manual overrides)
+- [ ] Each failure was classified (Missing context / Wrong tool / Skipped verification / Over-engineering / Repeated correction / Skill gap)
+- [ ] Proposed fixes are specific (exact file + exact change) and include expected impact
+- [ ] Fix was applied (skill patch, AGENTS.md update, or memory entry)
+- [ ] Efficacy is tracked: did the same pattern recur in the next 3 sessions?
+- [ ] If efficacy < 50%, the threshold for proposing changes was raised (reducing over-patching)

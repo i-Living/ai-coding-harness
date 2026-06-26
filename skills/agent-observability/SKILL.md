@@ -1,13 +1,15 @@
 ---
 name: agent-observability
 description: "Track agent actions, decisions, and outcomes: structured traces, health checks, failure patterns."
-version: 1.0.0
+version: 1.0.1
+author: Hermes Agent
+license: MIT
 platforms: [linux, macos, windows]
 metadata:
   hermes:
     tags: [observability, monitoring, tracing, metrics, production]
     category: ship
-    related_skills: [eval-harness, rho-retrospective-harness-optimization, session_search]
+    related_skills: [eval-harness, rho-retrospective-harness-optimization]
 ---
 
 # Agent Observability
@@ -138,3 +140,13 @@ Observability logs → RHO detects patterns → RHO proposes fixes → RHO appli
 - **Privacy** — don't log user content or secrets. Log structure, not data.
 - **Session search is your DB** — Hermes sessions already store everything. Use `session_search` instead of building a separate log store.
 - **Metrics without action are waste** — if you're not using metrics to improve (RHO), don't track them
+
+## Verification
+
+After applying agent-observability:
+
+- [ ] Task outcome was logged (Goal, Files changed, Verification result, Status, Time)
+- [ ] For complex tasks: action traces recorded (tool calls with timing)
+- [ ] Weekly health check: success rate, repeated corrections, verification gaps analyzed
+- [ ] Observability data was fed into RHO for pattern detection
+- [ ] Privacy: no user content or secrets in logs — structure only

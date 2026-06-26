@@ -1,6 +1,15 @@
 ---
 name: code-review-and-quality
-description: Conducts multi-axis code review. Use before merging any change. Use when reviewing code written by yourself, another agent, or a human. Use when you need to assess code quality across multiple dimensions before it enters the main branch.
+description: "Conducts multi-axis code review. Use before merging any change. Use when reviewing code written by yourself, another agent, or a human. Use when you need to assess code quality across multiple dimensions before it enters the main branch."
+version: 2.0.0
+author: Hermes Agent (adapted from addyosmani/agent-skills)
+license: MIT
+platforms: [linux, macos, windows]
+metadata:
+  hermes:
+    tags: [code-review, quality, security, correctness, performance, factory-model]
+    category: review
+    related_skills: [test-driven-development, incremental-implementation, requesting-code-review, eval-harness, security-and-hardening, performance-optimization]
 ---
 
 # Code Review and Quality
@@ -338,8 +347,19 @@ Part of code review is dependency review:
 ```
 ## See Also
 
-- For detailed security review guidance, see `references/security-checklist.md`
-- For performance review checks, see `references/performance-checklist.md`
+- For detailed security review guidance, see `references/security-checklist.md` in the project root
+- For performance review checks, see `references/performance-checklist.md` in the project root
+
+## Pitfalls
+
+- **Don't rubber-stamp** — "LGTM" without evidence helps no one
+- **Don't soften real issues** — if it's a production bug, say so directly
+- **Lead with what matters** — correctness and security first, then structure, then nits
+- **Don't accept "I'll clean it up later"** — it never happens. Require cleanup before merge
+- **Review the tests first** — they reveal intent and coverage gaps
+- **Label all feedback** — Critical / Required / Optional / Nit. Unlabeled feedback wastes author time
+
+See also: Common Rationalizations and Red Flags below.
 
 ## Common Rationalizations
 

@@ -8,7 +8,7 @@ platforms: [linux, macos, windows]
 metadata:
   hermes:
     tags: [code-review, security, verification, quality, pre-commit, auto-fix]
-    related_skills: [subagent-driven-development, plan, test-driven-development, github-code-review, eval-harness]
+    related_skills: [test-driven-development, subagent-driven-development, eval-harness]
 ---
 
 # Pre-Commit Code Verification
@@ -289,3 +289,14 @@ run `[[factory-mode]]` first — it audits and configures everything this skill 
 - **No test framework found** — skip regression check, reviewer verdict still runs
 - **Lint tools not installed** — skip that check silently, don't fail
 - **Auto-fix introduces new issues** — counts as a new failure, cycle continues
+
+## Verification
+
+After completing the pre-commit pipeline:
+
+- [ ] `git diff --cached` is non-empty (there are staged changes to verify)
+- [ ] Static security scan passed (no secrets, injection, or dangerous patterns in staged changes)
+- [ ] Baseline tests + lint: no NEW failures introduced
+- [ ] Independent reviewer subagent returned `passed: true`
+- [ ] All Critical and Required issues resolved
+- [ ] Commit landed with `[verified]` prefix in message

@@ -1,6 +1,15 @@
 ---
 name: spec-driven-development
-description: Creates specs before coding. Use when starting a new project, feature, or significant change and no specification exists yet. Use when requirements are unclear, ambiguous, or only exist as a vague idea.
+description: "Creates specs before coding. Use when starting a new project, feature, or significant change and no specification exists yet. Use when requirements are unclear, ambiguous, or only exist as a vague idea."
+version: 1.1.0
+author: Hermes Agent (adapted from addyosmani/agent-skills)
+license: MIT
+platforms: [linux, macos, windows]
+metadata:
+  hermes:
+    tags: [spec, planning, workflow, define, factory-model]
+    category: define
+    related_skills: [interview-me, planning-and-task-breakdown, incremental-implementation, test-driven-development, eval-harness]
 ---
 
 # Spec-Driven Development
@@ -57,8 +66,8 @@ Don't silently fill in ambiguous requirements. The spec's entire purpose is to s
    # Bun/TypeScript (Hermes harness)
    Build: bun run build
    Test: bun test
-   Lint: bun x biome check <sources>
-   Format: bun x biome format --write <sources>
+   Lint: biome check <sources>
+   Format: biome format --write <sources>
    Check: bun run check          # typecheck + lint + test
    Dev: bun run dev
 
@@ -146,7 +155,7 @@ With the validated spec, generate a technical implementation plan:
 4. Identify what can be built in parallel vs. what must be sequential
 5. Define verification checkpoints between phases
 
-> Follow `planning-and-task-breakdown` for the dependency-graph mapping and vertical-slicing mechanics behind these steps; it is the canonical source. The bullets above are a lightweight summary; if they ever diverge, `planning-and-task-breakdown` takes precedence.
+> Defer to `planning-and-task-breakdown` for the dependency-graph mapping and vertical-slicing mechanics. It is the canonical source for planning.
 
 The plan should be reviewable: the human should be able to read it and say "yes, that's the right approach" or "no, change X."
 
@@ -160,7 +169,7 @@ Break the plan into discrete, implementable tasks:
 - Tasks are ordered by dependency, not by perceived importance
 - No task should require changing more than ~5 files
 
-> Follow `planning-and-task-breakdown` for the full task-sizing and dependency-ordering mechanics; it is the canonical source. The template below is a lightweight inline form; if they ever diverge, `planning-and-task-breakdown` takes precedence.
+> Defer to `planning-and-task-breakdown` for the full task-sizing and dependency-ordering mechanics. It is the canonical source for task breakdown.
 
 **Task template:**
 ```markdown
@@ -172,12 +181,13 @@ Break the plan into discrete, implementable tasks:
 
 ### Phase 4: Implement
 
-Execute tasks one at a time following `skills/incremental-implementation/SKILL.md` (`incremental-implementation`) and `skills/test-driven-development/SKILL.md` (`test-driven-development`). Use `skills/context-engineering/SKILL.md` (`context-engineering`) to load the right spec sections and source files at each step rather than flooding the agent with the entire spec.
+Execute tasks one at a time following `incremental-implementation` and `test-driven-development`. Use `context-compaction` to load the right spec sections and source files at each step rather than flooding the agent with the entire spec.
 
 After each implementation task, run verification through the project's harness:
 ```bash
 bun run check     # typecheck + lint + test (eval-harness + factory-mode stack)
 ```
+
 If the project uses the [[eval-harness]] + [[factory-mode]] stack, this runs automatically after every code change. For non-Bun projects, run the equivalent: `npm test && npm run lint`.
 
 ## Keeping the Spec Alive
@@ -216,3 +226,11 @@ Before proceeding to implementation, confirm:
 - [ ] Success criteria are specific and testable
 - [ ] Boundaries (Always/Ask First/Never) are defined
 - [ ] The spec is saved to a file in the repository
+
+## Pitfalls
+
+- **Don't skip the spec for "simple" tasks** — a two-line spec with acceptance criteria is infinitely better than none.
+- **Don't silently fill in ambiguity** — surface assumptions immediately. The spec's purpose is to expose misunderstandings.
+- **Don't proceed to PLAN until the spec is human-reviewed** — spec is the shared source of truth. If it's wrong, everything downstream is wrong.
+- **The spec is a living document** — update it when decisions or scope change. Commit it alongside the code.
+- **Don't flood context with the entire spec** — use `context-compaction` to load only the relevant sections per task.

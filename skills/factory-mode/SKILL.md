@@ -1,7 +1,9 @@
 ---
 name: factory-mode
 description: "Full Factory Model setup for TS/Bun projects: AGENTS.md, Biome, tests, CI, pre-commit hooks, check pipeline."
-version: 1.0.0
+version: 1.1.0
+author: Hermes Agent
+license: MIT
 platforms: [linux, macos, windows]
 metadata:
   hermes:
@@ -220,3 +222,16 @@ After setup, verify AGENTS.md reflects the current state. Add if missing:
 - **CI bun version** — detect from `package.json` `packageManager` field or `bun.lock`.
 - **GitHub repo creation** — the user's `gh_token` is a fine-grained PAT that blocks `.github/workflows/` writes and may lack `createRepository`. If `gh repo create` fails with `Resource not accessible by personal access token`, tell the user to create the repo manually on GitHub, provide the remote URL, and wait for confirmation before pushing. Don't loop-retry `gh repo create`.
 - **Don't rename busy directory** — if `mv` fails with "Device or resource busy", the shell has cwd inside the target. Try `cd .. && mv` or tell the user to do it after the session ends.
+
+## Verification
+
+After setting up the harness for a project:
+
+- [ ] AGENTS.md exists and covers stack, commands, conventions, and pitfalls
+- [ ] `biome.json` is configured and `bun run format` works
+- [ ] `package.json` has `check`, `test`, `format`, `lint`, `typecheck`, `build` scripts
+- [ ] `bun run check` passes (typecheck + lint + test)
+- [ ] `bun run build` succeeds
+- [ ] Pre-commit hook is installed and functional (`bunx husky` or equivalent)
+- [ ] CI workflow (`.github/workflows/ci.yml`) exists and matches the project stack
+- [ ] At least one smoke test runs successfully

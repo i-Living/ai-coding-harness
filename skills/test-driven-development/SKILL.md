@@ -245,3 +245,23 @@ Otherwise → not TDD
 ```
 
 No exceptions without the user's explicit permission.
+
+## Pitfalls
+
+- **Never write code before the test** — if you do, delete it and start over. No exceptions.
+- **Always watch the test FAIL first** — a test that passes immediately proves nothing. You're testing existing behavior.
+- **Don't over-mock** — test real behavior, not mock behavior. Mock only I/O boundaries.
+- **One behavior per test** — if the test name has "and", split it into two tests.
+- **Happy path is not enough** — always add edge cases, error paths, and boundary values.
+- **Don't test implementation details** — test what the code does, not how it does it. Refactoring shouldn't break tests.
+
+## Verification
+
+After completing a TDD cycle:
+
+- [ ] RED: test was written first and was observed to fail
+- [ ] GREEN: minimal code was written to pass the test (no extra features)
+- [ ] REFACTOR: code was cleaned up while keeping tests green
+- [ ] `bun test` passes (full suite)
+- [ ] `bun run check` passes (typecheck + lint + test)
+- [ ] If bug fix: the test reproduces the bug AND prevents regression

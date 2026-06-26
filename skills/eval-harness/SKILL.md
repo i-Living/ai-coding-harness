@@ -1,12 +1,15 @@
 ---
 name: eval-harness
-description: Automatic verification gates for agent actions — lint, format, test, file checks. Part of the Factory Model harness.
-version: 1.1.0
+description: "Automatic verification gates for agent actions — lint, format, test, file checks. Part of the Factory Model harness."
+version: 1.2.0
+author: Hermes Agent
+license: MIT
 platforms: [linux, macos, windows]
 metadata:
   hermes:
     tags: [harness, verification, evals, factory-model, quality]
     category: verify
+    related_skills: [factory-mode, requesting-code-review, context-compaction, agent-observability]
 ---
 
 # Eval Harness — Automatic Verification Gates
@@ -14,6 +17,15 @@ metadata:
 Automatic verification gates after every agent action. Part of the Factory Model — AI generates, harness verifies.
 
 > **WHEN TO APPLY:** after EVERY code change (write_file, patch, terminal with code) — do NOT wait for user prompt. Eval harness must fire as a reflex.
+
+## When to Use
+
+- After ANY code change — fires as a reflex, no user trigger needed
+- After `write_file`, `patch`, or `terminal` with code edits
+- Before committing changes (commit gates)
+- After writing files to verify they exist and are valid
+
+**When NOT to use:** Documentation-only changes, pure config without code changes.
 
 ## Gates by Operation Type
 
@@ -100,13 +112,6 @@ For tasks where you can't write a deterministic test (summaries, translations, a
   3. Is the tone/style appropriate?
 - **If response > 500 words** — offer TL;DR at the top
 
-## Related Skills
-
-- [[factory-mode]] — full harness setup (AGENTS.md, Biome, tests, CI, pre-commit)
-- [[requesting-code-review]] — pre-commit security review pipeline
-- [[context-compaction]] — token economics for large payloads
-- [[agent-observability]] — traces and metrics
-
 ## Pitfalls
 
 - **Don't run ③ (build) and ④ (tests) if project isn't configured** — skip, not an error
@@ -117,3 +122,13 @@ For tasks where you can't write a deterministic test (summaries, translations, a
 - **Don't run biome format on others'/unchanged files** — only on files you touched
 - **On Windows: `npx @biomejs/biome format --write .`** (full package name) — if biome not installed globally
 - **`bun run check` is a non-standard script** — package.json may have `lint`, `typecheck` instead. Check scripts before running.
+
+## Verification
+
+After applying eval-harness to a task:
+
+- [ ] Format gate ran on changed files and passed (or issues were auto-fixed)
+- [ ] Code gate (`bun run check` or equivalent) passed — typecheck + lint + test
+- [ ] File gate: all written files exist, are non-empty, and have valid format
+- [ ] Git gate: branch is as expected, no unintended pending changes
+- [ ] For non-deterministic tasks: LM-as-a-Judge self-review completed (3 questions)
