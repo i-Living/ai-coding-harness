@@ -53,12 +53,15 @@ After any git action:
 
 ### 4. Wiki Gates
 
-After writing to Wiki (`$WIKI_PATH/wiki/`):
-- **File created/updated:** verify via `search_files`
-- **index.md updated:** grep for new page name in index.md
-- **log.md updated:** grep for date/name in log.md
-- **Wikilinks valid:** all `[[...]]` links in new page point to existing pages (where possible)
-- **Frontmatter:** title, created, updated, type, tags, sources — all fields present
+After writing to any wiki source (project `docs/`, global `$WIKI_PATH`, or LLM-wiki):
+- **File created/updated** — verify via `search_files` at the path agent wrote to
+- **Non-empty** — size > 0 bytes
+
+**LLM-wiki conventions (auto-detect):** if target dir contains `index.md` → verify index was updated. If `log.md` exists → verify log entry added. If files use YAML frontmatter → verify `title`, `created`, `type`, `tags`, `sources` fields present.
+
+**Wikilinks (optional):** if `[[...]]` wikilinks present in the page → verify each target exists (resolve relative to the wiki root, not agent's cwd).
+
+> **Key rule:** check the path the agent ACTUALLY wrote to — don't assume a global wiki path. Detect conventions from the target directory, not from environment variables.
 
 ### 5. Commit Gates (before `git commit` / opening PR)
 
@@ -110,7 +113,7 @@ For tasks where you can't write a deterministic test (summaries, translations, a
 - **Don't auto-fix failing tests without explicit permission** — first explain what failed
 - **Biome format ≠ Biome check** — format auto-fixes, check only verifies. Use format for fixing, check for verification.
 - **Biome 2.x config schema changed:** `files.ignore` and `linter.rules` — unknown keys in 2.5+. Use `vcs.useIgnoreFile: true` for ignore, `"linter": {"enabled": true}` for default recommended rules. Check current $schema URL.
-- **Wiki checks are non-blocking** — if index.md wasn't updated, just update it, don't stop everything
+- **Wiki checks are non-blocking** — if index/log wasn't updated, just update them, don't stop everything. Missing wikilinks → flag but don't block.
 - **Don't run biome format on others'/unchanged files** — only on files you touched
 - **On Windows: `npx @biomejs/biome format --write .`** (full package name) — if biome not installed globally
 - **`bun run check` is a non-standard script** — package.json may have `lint`, `typecheck` instead. Check scripts before running.
