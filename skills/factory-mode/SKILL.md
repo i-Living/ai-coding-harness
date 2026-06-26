@@ -78,8 +78,10 @@ Write AGENTS.md following user conventions:
 
 ### Biome
 
+> **If the project already uses ESLint + Prettier (or `ruff` for Python), skip Biome.** Only install Biome for greenfield TS/Bun projects. For existing projects, adapt the `check`/`format`/`lint` scripts to the project's existing toolchain.
+
 ```bash
-# Install
+# Install (TS/Bun projects only)
 cd <project> && bun add -d @biomejs/biome
 ```
 
