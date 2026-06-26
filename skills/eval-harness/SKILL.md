@@ -40,6 +40,8 @@ After any change to `.ts/.tsx/.js/.jsx` files in a project:
 ④ Tests: bun test 2>&1                    # if "test" script exists
 ```
 
+> **Non-Bun projects:** substitute — `npm test`/`pytest`/`cargo test` for ④, `npm run build`/`cargo build` for ③, `ruff check`/`eslint`/`clippy` for ②. The gate structure is stack-agnostic; only the commands change.
+
 **Rules:**
 - ① and ② — ALWAYS after code changes
 - ③ — only before git commit

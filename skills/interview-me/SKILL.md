@@ -85,6 +85,24 @@ Wait for the user to react before asking the next question.
 
 The risk here is a polite user agreeing with your guess to be agreeable. Mitigate by being visibly willing to be wrong, and occasionally guess in a direction you expect the user to push back on.
 
+**Hard cap: 5 questions maximum.** After 5 Q&A rounds, stop asking and produce the restate with your best understanding. If confidence is still below ~70%, include an explicit caveat: "Confidence: ~60% — confirmed: [what you know], still uncertain: [what you don't]." The user can then fill the gap in one shot instead of question #6.
+
+**Switch to options after Q3.** The first 2-3 questions should be open-ended (discovery). After Q3, switch to the A/B/C pattern with tradeoffs:
+
+```
+Q: Which direction for the experiment tracker — a simple list in a single page, or a kanban board with columns?
+GUESS: list first, because your gap was "I don't know what exists" not "I need to manage workflow stages."
+
+OPTIONS:
+A) Simple list — 1 day, no learning curve, but no workflow management
+B) Kanban board — 3-4 days, visual stages, but might be overkill if you don't have stages
+C) List now, kanban later — start with A, migrate to B when you hit the limit
+
+→ C maps to incremental-implementation (vertical slices). But your call.
+```
+
+LLMs are better at generating architectural alternatives with tradeoffs than users are at formulating requirements from scratch. After Q3, the agent's job shifts from "extract intent" to "propose concrete paths and let the user react." Reacting is always faster than generating.
+
 ### Step 3: Listen for "want vs. should want"
 
 The most dangerous answers are the ones where the user says what a thoughtful answer *sounds like* rather than what they actually want. Watch for:
@@ -227,6 +245,8 @@ The `clarify` tool naturally enforces one-question-at-a-time with structured cho
 - Questions framed as "what would be best practice?" instead of "what do you actually want?"
 - The user gives a sophistication-signaling answer ("scalable", "clean", "modern") and you accept it without probing whether it's what they actually want
 - Three or more rounds without your confidence visibly rising: you're asking the wrong questions, step back and reframe
+- More than 5 questions asked: hard cap exceeded — stop and restate with caveats
+- After Q3, still asking open-ended questions instead of presenting A/B/C options with tradeoffs
 - A confidence number below ~70% with no reason attached: the user can't help close the gap if they don't know what's missing
 - Saving the intent doc before the user has confirmed (the doc itself implies a yes the user didn't give)
 - Skipping the "Out of scope" line in the restate (silent disagreement about non-goals is half of misalignment)
@@ -241,6 +261,8 @@ After applying interview-me:
 - [ ] At least one "what would you actually want if you didn't have to justify it?" probe ran when the user gave a sophistication-signaling or convention-signaling answer
 - [ ] A concrete restate (Outcome / User / Why now / Success / Constraint / Out of scope) was written back to the user
 - [ ] The user confirmed the restate with an explicit yes (not "whatever you think," not "sounds good," not silence)
+- [ ] Hard cap was respected (≤5 questions total)
+- [ ] After Q3, questions shifted from open-ended to A/B/C options with tradeoffs
 - [ ] At the stop point, the agent could predict reactions to the next three questions it would ask
 - [ ] Any handoff to a downstream skill (`spec-driven-development`) was framed in terms of the confirmed intent, not the original underspecified ask
 
