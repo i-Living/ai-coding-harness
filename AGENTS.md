@@ -1,6 +1,6 @@
 # AI Coding Harness — Agent Instructions
 
-Factory Model harness for AI-assisted development. Six skills that automate quality gates, project infrastructure, and the full spec→verify pipeline.
+Factory Model harness for AI-assisted development. Nine skills that automate quality gates, project infrastructure, optimization, and the full spec→verify→improve pipeline.
 
 ## Quick Install
 
@@ -15,6 +15,9 @@ hermes skills install https://raw.githubusercontent.com/i-Living/ai-coding-harne
 hermes skills install https://raw.githubusercontent.com/i-Living/ai-coding-harness/main/skills/test-driven-development/SKILL.md
 hermes skills install https://raw.githubusercontent.com/i-Living/ai-coding-harness/main/skills/code-review-and-quality/SKILL.md
 hermes skills install https://raw.githubusercontent.com/i-Living/ai-coding-harness/main/skills/requesting-code-review/SKILL.md
+hermes skills install https://raw.githubusercontent.com/i-Living/ai-coding-harness/main/skills/context-compaction/SKILL.md
+hermes skills install https://raw.githubusercontent.com/i-Living/ai-coding-harness/main/skills/rho-retrospective-harness-optimization/SKILL.md
+hermes skills install https://raw.githubusercontent.com/i-Living/ai-coding-harness/main/skills/agent-observability/SKILL.md
 ```
 
 After install: `/reload-skills` or restart session.
@@ -35,6 +38,13 @@ After install: `/reload-skills` or restart session.
 | **code-review-and-quality** | Before merge. 5-axis review: correctness, readability, architecture, security, performance. |
 | **requesting-code-review** | Before commit. Security scan → independent reviewer → auto-fix → verified commit. |
 
+### Optimization
+| Skill | When to use |
+|-------|-------------|
+| **context-compaction** | Before sending large payloads to LLM. Token economics: think-in-code, selective extraction, structured output. |
+| **rho-retrospective-harness-optimization** | After failures or user corrections. Analyze past sessions → detect patterns → auto-patch skills/AGENTS.md. |
+| **agent-observability** | During and after tasks. Structured traces, health checks, metrics — feeds data into RHO. |
+
 ## The Pipeline
 
 ```
@@ -42,11 +52,12 @@ spec-driven-dev → TDD → code-review → requesting-code-review → [verified
       │             │        │               │
       └─────────────┴────────┴───────────────┘
                        │
-                  eval-harness
-                (per-action gates)
+                  eval-harness (per-action gates)
+                  context-compaction (token savings)
                        │
-                  factory-mode
-               (one-time setup)
+                  agent-observability (traces + metrics)
+                       │
+                  RHO (analyze → improve → validate)
 ```
 
 ## Conventions
@@ -69,6 +80,9 @@ bun run build    # = production build
 ### When to load skills
 - **factory-mode** — load ONCE when setting up a project. Don't keep loaded afterward.
 - **eval-harness** — should be loaded persistently. If not, load at session start for development sessions.
+- **context-compaction** — load alongside eval-harness. Fires automatically before large payloads.
+- **agent-observability** — load at session start for production work. Emit outcome after each task.
+- **rho-retrospective-harness-optimization** — load weekly or after user correction. Scans past sessions.
 - **spec-driven-development** — load at project start. Reference during implementation.
 - **test-driven-development** — load when implementing features/bug fixes.
 - **code-review-and-quality** — load before merge/PR review.
@@ -80,6 +94,9 @@ bun run build    # = production build
 - **Respect tsconfig.json** — never change `include`/`exclude` without explicit permission.
 - **Biome 2.5 schema** — `files.ignore` removed in 2.x. Use `vcs.useIgnoreFile: true`.
 - **Monorepo awareness** — if `web/` has its own package.json, configs go there.
-- **eval-harness + requesting-code-review overlap** — eval-harness is per-action (format after every write), requesting-code-review is pre-commit (full pipeline with security scan + independent reviewer). Both can and should be active simultaneously.
+- **eval-harness + requesting-code-review overlap** — eval-harness is per-action, requesting-code-review is pre-commit with security scan + independent reviewer. Both can and should be active.
 - **TDD strictness** — if agent writes code before test, delete and restart. No exceptions.
-- **spec-driven gating** — don't proceed to PLAN until spec is human-reviewed. Don't proceed to TASKS until plan is approved.
+- **spec-driven gating** — don't proceed to PLAN until spec is human-reviewed.
+- **context-compaction != lossy** — don't over-filter. Missing a critical error line costs more than tokens saved.
+- **RHO threshold** — one failure isn't a pattern. Wait for 2+ occurrences before proposing a patch.
+- **Observability without action is waste** — if not using metrics to improve (RHO), don't track them.
